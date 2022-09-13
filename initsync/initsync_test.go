@@ -8,7 +8,7 @@ import (
 	"fmt"
 	"testing"
 
-	"bitbucket.org/libertyfund/cloudfuncs/utils/initsync"
+	"github.com/lfcloudfunc/utils/initsync"
 )
 
 type one int

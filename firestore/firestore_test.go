@@ -14,7 +14,7 @@ import (
 	"github.com/jfcote87/ctxclient"
 	"github.com/jfcote87/oauth2"
 
-	fs "bitbucket.org/libertyfund/cloudfuncs/utils/firestore"
+	fs "github.com/lfcloudfunc/utils/firestore"
 )
 
 type DSConnect struct {

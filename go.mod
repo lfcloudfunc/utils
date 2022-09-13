@@ -1,4 +1,4 @@
-module bitbucket.org/libertyfund/cloudfuncs/utils
+module github.com/lfcloudfunc/utils
 
 go 1.17
 

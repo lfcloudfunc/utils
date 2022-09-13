@@ -10,8 +10,8 @@ import (
 	"net/url"
 	"testing"
 
-	"bitbucket.org/libertyfund/cloudfuncs/utils/cfauth"
 	"github.com/jfcote87/ctxclient"
+	"github.com/lfcloudfunc/utils/cfauth"
 )
 
 type testHandler struct {

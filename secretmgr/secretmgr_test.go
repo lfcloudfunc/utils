@@ -14,8 +14,8 @@ import (
 	"net/url"
 	"testing"
 
-	"bitbucket.org/libertyfund/cloudfuncs/utils/secretmgr"
 	"github.com/jfcote87/ctxclient"
+	"github.com/lfcloudfunc/utils/secretmgr"
 )
 
 type testHandler struct {
