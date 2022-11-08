@@ -14,14 +14,28 @@ import (
 
 // Tokensource returns access tokens for the default Service Account
 type Tokensource struct {
-	Scopes []string
+	Account string
+	Scopes  []string
 	ctxclient.Func
 }
 
+type tsOverride struct{}
+
+var tsOverrideKey = (*tsOverride)(nil)
+
 const serviceAccountTokenURL = "http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/token"
+
+// ContextTokenSource creates a context with an override tokensource
+func ContextTokenSource(ctx context.Context, ts *oauth2.TokenSource) context.Context {
+	return context.WithValue(ctx, tsOverrideKey, ts)
+}
 
 // Token retrieves an access_token from GCE
 func (ts *Tokensource) Token(ctx context.Context) (*oauth2.Token, error) {
+	if tso, ok := ctx.Value(tsOverrideKey).(oauth2.TokenSource); ok {
+		return tso.Token(ctx)
+	}
+
 	r, _ := http.NewRequest("GET", serviceAccountTokenURL, nil)
 	r.Header.Set("Metadata-Flavor", "Google")
 	if len(ts.Scopes) > 0 {

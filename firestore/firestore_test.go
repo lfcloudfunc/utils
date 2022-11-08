@@ -6,13 +6,8 @@
 package firestore_test
 
 import (
-	"context"
-	"net/http"
 	"testing"
 	"time"
-
-	"github.com/jfcote87/ctxclient"
-	"github.com/jfcote87/oauth2"
 
 	fs "github.com/lfcloudfunc/utils/firestore"
 )
@@ -72,34 +67,35 @@ func TestMarshal(t *testing.T) {
 			"x2": fs.StringValue("x2"),
 		})
 	*/
-	tm := time.Now()
+	/*
+		tm := time.Now()
 
-	dsx := DSConnect{
-		EnvelopeID: "envXXX",
-		Subject:    "subc",
-		UserName:   "894992240294",
-		Email:      "jfc@lf.org",
-		Status:     "New",
-		Created:    &tm,
-		LibertyID:  "EXX-XXXX",
-		DriveID:    "asdfasdfasdfadfs",
-		Headers: map[string]string{
-			"Content-type": "app/json",
-			"Accept":       "app/json",
-		},
-	}
+		dsx := DSConnect{
+			EnvelopeID: "envXXX",
+			Subject:    "subc",
+			UserName:   "894992240294",
+			Email:      "jfc@lf.org",
+			Status:     "New",
+			Created:    &tm,
+			LibertyID:  "EXX-XXXX",
+			DriveID:    "asdfasdfasdfadfs",
+			Headers: map[string]string{
+				"Content-type": "app/json",
+				"Accept":       "app/json",
+			},
+		}
 
-	var testToken = "ya29.c.EmFtB6ivmwIBKGy_DdGb8M-9JVRHWPciasIpafB3tQ4_kK6Id68SaQ_OE2_iEnX1WL3q1SpbmQK9D0EB9WlYr6rzmUTmVFSEFvld_DQMK0J1NJ3Y_VDzsWBp5Ibl0FwFTvFA"
-	ctx := context.Background()
-	appTS := oauth2.StaticTokenSource(&oauth2.Token{AccessToken: testToken})
-	cl := oauth2.Client(appTS, nil)
-	var f ctxclient.Func = func(ctx context.Context) (*http.Client, error) {
-		return cl, nil
-	}
+		var testToken = "ya29.c.EmFtB6ivmwIBKGy_DdGb8M-9JVRHWPciasIpafB3tQ4_kK6Id68SaQ_OE2_iEnX1WL3q1SpbmQK9D0EB9WlYr6rzmUTmVFSEFvld_DQMK0J1NJ3Y_VDzsWBp5Ibl0FwFTvFA"
+		ctx := context.Background()
+		appTS := oauth2.StaticTokenSource(&oauth2.Token{AccessToken: testToken})
+		cl := oauth2.Client(appTS, nil)
+		var f ctxclient.Func = func(ctx context.Context) (*http.Client, error) {
+			return cl, nil
+		}
 
-	err := fs.UpdateDoc(ctx, f, "lf-domain-project", "testrecs/"+dsx.EnvelopeID, dsx.valueMap())
-	t.Errorf("%v", err)
-
+		err := fs.UpdateDoc(ctx, f, "lf-domain-project", "testrecs/"+dsx.EnvelopeID, dsx.valueMap())
+		t.Errorf("%v", err)
+	*/
 	/*var body = map[string]interface{}{
 		"fields": x,
 	}
