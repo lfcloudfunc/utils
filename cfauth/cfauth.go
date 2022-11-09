@@ -1,29 +1,30 @@
+// Package cfauth provides a wrapper to a cloud function/gce
+// tokensource
 package cfauth
 
 import (
 	"context"
-	"encoding/json"
-	"net/http"
-	"net/url"
-	"strings"
-	"time"
 
-	"github.com/jfcote87/ctxclient"
 	"github.com/jfcote87/oauth2"
+	"github.com/jfcote87/oauth2/google"
 )
 
 // Tokensource returns access tokens for the default Service Account
-type Tokensource struct {
-	Account string
-	Scopes  []string
-	ctxclient.Func
+type TokenSource struct {
+	oauth2.TokenSource
 }
 
 type tsOverride struct{}
 
 var tsOverrideKey = (*tsOverride)(nil)
 
-const serviceAccountTokenURL = "http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/token"
+// New returns an oauth2.TokenSource that can be overridden with
+// a context.Context
+func New(scopes ...string) oauth2.TokenSource {
+	return &TokenSource{
+		TokenSource: google.ComputeTokenSource("", scopes...),
+	}
+}
 
 // ContextTokenSource creates a context with an override tokensource
 func ContextTokenSource(ctx context.Context, ts *oauth2.TokenSource) context.Context {
@@ -31,24 +32,9 @@ func ContextTokenSource(ctx context.Context, ts *oauth2.TokenSource) context.Con
 }
 
 // Token retrieves an access_token from GCE
-func (ts *Tokensource) Token(ctx context.Context) (*oauth2.Token, error) {
-	if tso, ok := ctx.Value(tsOverrideKey).(oauth2.TokenSource); ok {
-		return tso.Token(ctx)
+func (ts *TokenSource) Token(ctx context.Context) (*oauth2.Token, error) {
+	if tsCtx, ok := ctx.Value(tsOverrideKey).(oauth2.TokenSource); ok {
+		return tsCtx.Token(ctx)
 	}
-
-	r, _ := http.NewRequest("GET", serviceAccountTokenURL, nil)
-	r.Header.Set("Metadata-Flavor", "Google")
-	if len(ts.Scopes) > 0 {
-		r.URL.RawQuery = url.Values{"scopes": []string{strings.Join(ts.Scopes, ",")}}.Encode()
-	}
-	res, err := ts.Do(ctx, r)
-	if err != nil {
-		return nil, err
-	}
-	defer res.Body.Close()
-	var tkmap = make(map[string]interface{})
-	if err = json.NewDecoder(res.Body).Decode(&tkmap); err != nil {
-		return nil, err
-	}
-	return oauth2.TokenFromMap(tkmap, 30*time.Second)
+	return oauth2.TokenSource(ts).Token(ctx)
 }
