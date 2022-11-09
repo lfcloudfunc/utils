@@ -27,7 +27,7 @@ func New(scopes ...string) oauth2.TokenSource {
 }
 
 // ContextTokenSource creates a context with an override tokensource
-func ContextTokenSource(ctx context.Context, ts *oauth2.TokenSource) context.Context {
+func ContextTokenSource(ctx context.Context, ts oauth2.TokenSource) context.Context {
 	return context.WithValue(ctx, tsOverrideKey, ts)
 }
 
