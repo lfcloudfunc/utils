@@ -4,6 +4,8 @@ package cfauth
 
 import (
 	"context"
+	"errors"
+	"net/http"
 
 	"github.com/jfcote87/oauth2"
 	"github.com/jfcote87/oauth2/google"
@@ -36,5 +38,13 @@ func (ts *TokenSource) Token(ctx context.Context) (*oauth2.Token, error) {
 	if tsCtx, ok := ctx.Value(tsOverrideKey).(oauth2.TokenSource); ok {
 		return tsCtx.Token(ctx)
 	}
-	return oauth2.TokenSource(ts).Token(ctx)
+	if ts == nil {
+		return nil, errors.New("cfauth: nil tokensource")
+	}
+	return ts.Token(ctx)
+}
+
+// Client returns an authorizing client
+func (ts *TokenSource) Client() *http.Client {
+	return oauth2.Client(ts, nil)
 }
