@@ -11,9 +11,9 @@ import (
 	"github.com/jfcote87/oauth2/google"
 )
 
-// Tokensource returns access tokens for the default Service Account
+// TokenSource returns access tokens for the default Service Account
 type TokenSource struct {
-	oauth2.TokenSource
+	TS oauth2.TokenSource
 }
 
 type tsOverride struct{}
@@ -24,7 +24,7 @@ var tsOverrideKey = (*tsOverride)(nil)
 // a context.Context
 func New(scopes ...string) oauth2.TokenSource {
 	return &TokenSource{
-		TokenSource: google.ComputeTokenSource("", scopes...),
+		TS: google.ComputeTokenSource("", scopes...),
 	}
 }
 
@@ -38,10 +38,10 @@ func (ts *TokenSource) Token(ctx context.Context) (*oauth2.Token, error) {
 	if tsCtx, ok := ctx.Value(tsOverrideKey).(oauth2.TokenSource); ok {
 		return tsCtx.Token(ctx)
 	}
-	if ts == nil {
+	if ts == nil || ts.TS == nil {
 		return nil, errors.New("cfauth: nil tokensource")
 	}
-	return ts.Token(ctx)
+	return ts.TS.Token(ctx)
 }
 
 // Client returns an authorizing client
