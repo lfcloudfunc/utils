@@ -2,7 +2,7 @@ package tabs
 
 import "github.com/jfcote87/esign/v2.1/model"
 
-// Merge merges the map data into the tabs structure
+// Merge merges the map data into the esign tabs structure
 func Merge(tb *model.Tabs, m map[string]interface{}) *model.Tabs {
 	r := &model.Tabs{}
 
